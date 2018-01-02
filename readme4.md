@@ -6,13 +6,84 @@
 
 ## 4.1请求转发与重定向
 
+-   当处理器对请求处理完毕后，向其它资源进行跳转时，有两种跳转方式：**请求转发**与**重定向**
+    -   根据所要跳转的资源类型，又可分为两类：**跳转到页面**与**跳转到其它处理器**
+    -   **请求转发可以访问WEB-INF中的资源**,重定向不能
+    -   请求转发只有一次请求,一次响应,由请求的资源1在服务器内再此请求资源2,资源2来响应浏览器,转发的路径为服务器内路径
+    -   重定向有两次请求两次响应,第一次请求资源1,资源1响应后,再次请求资源2,资源2再响应,重定向路径为外部访问路径
+
 ### 4.1.1 返回 ModelAndView 时的请求转发
 
+-   默认情况下，当处理器方法返回 ModelAndView 时，跳转到指定的 View，使用的是**请求转发**,当然也可以显式的进行指出
+
+    -   在 setViewName()指定的视图前**添加`forward:`**，且此时的视图**不会再与视图解析器中的前辍与后辍进行拼接**;**必须写出相对于项目根的路径**
+
+    -   ```java
+        modelAndView.setViewName("forward:/WEB-INF/jsp/show.jsp");
+        ```
+
 -   请求转发到其他Controller
-    1.  请求转发到页面
-        1.  修改处理器类StudentController
-        2.  修改 springmvc 配置文件
-    2.  请求转发到其它 Controller
+
+    -   ```java
+        modelAndView.setViewName("forward:other.do");
+        ```
+
+1.  请求转发到页面
+
+    -   当通过请求转发跳转到目标资源（页面或 Controller）时，若需要**向下传递数据**，除了可以使用 request，session外，还可以将数据存放于 ModelAndView中的 **Model中**。页面通过**EL 表达式可直接访问该数据**
+
+    1.  修改处理器类ForwardController
+
+        ```java
+        @Controller
+        @RequestMapping("/test")
+        public class ForwardController {
+            @RequestMapping("/forward.do")
+            public ModelAndView fordward(User user) {
+                ModelAndView modelAndView = new ModelAndView();
+                modelAndView.addObject("user", user);
+                modelAndView.setViewName("forward:/web-resources/forward.jsp");
+                return modelAndView;
+            }
+        }
+        ```
+
+    2.  修改 springmvc 配置文件
+
+        ```xml
+            <!--注册组件扫描器:组件即处理器-->
+            <context:component-scan base-package="com.sqm.annotation.*"/>
+            <!--注册内部资源视图解析器-->
+            <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+            </bean>
+        ```
+
+2.  请求转发到其它 Controller
+
+    ```java
+    @Controller
+    @RequestMapping("/test")
+    public class ForwardToAnotherControllerController {
+        @RequestMapping("/some.do")
+        public ModelAndView doSome(User user) {
+            ModelAndView modelAndView = new ModelAndView();
+            modelAndView.addObject("user", user);
+            modelAndView.setViewName("forward:other.do");
+            return modelAndView;
+        }
+    	
+        @RequestMapping("/other.do")
+        public ModelAndView doOther() {
+            return new ModelAndView("forward:third.do");
+        }
+
+    	@RequestMapping("/third.do")
+        public ModelAndView doThird(User user) {
+          	System.out.println("user =" + user);
+            return new ModelAndView("forward:/web-resources/forward.jsp");
+        }
+    }
+    ```
 
 ### 4.1.2 返回 ModelAndView 时的重定向
 

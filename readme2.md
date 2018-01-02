@@ -19,7 +19,7 @@
 -   ```xml
         <!--BeanNameUrlHandlerMapping处理器映射器:将url与bean的id匹配-->
         <bean class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping"/>
-    ```
+  ```
 
 -   由源码可知,处理器映射器的方法可以看出,理器的 Bean 的id，必须以“/”开头,否则无法加入到 urls 数组中
 
@@ -67,7 +67,7 @@
                     </props>
                 </property>
             </bean>
-        ```
+      ```
 
 ## 2.2 处理器适配器 HandlerAdapter
 
@@ -86,8 +86,9 @@
 -   Controller接口中有一个方法:
 
 -   ```java
-    	ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception;
-    ```
+     ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception;
+     ```
+    ​```
 
 -   **handleRequest()**用于处理用户提交的请求,通过调用service层代码,实现对用户请求的计算响应,**并把数据与页面封装为一个ModelAndView对象,返回给中央调度器**
 
@@ -98,9 +99,10 @@
 -   HttpRequestHandler接口中有一个方法:
 
 -   ```java
-    	void handleRequest(HttpServletRequest request, HttpServletResponse response)
-    			throws ServletException, IOException;
-    ```
+     void handleRequest(HttpServletRequest request, HttpServletResponse response)
+     			throws ServletException, IOException;
+     ```
+    ​```
 
 -   **handleRequest()方法无返回值**,数据是通过直接放入request,session等域属性中,由request,session完成到目标页的跳转
 
@@ -121,7 +123,7 @@
 -   ```xml
         <!--注册MyHttpRequestController-->
         <bean class="com.sqm.handler.MyHttpRequestController" id="myHttpRequestController"/>
-    ```
+  ```
 
 ## 2.3 处理器
 
@@ -150,9 +152,11 @@
     AbstractController 类中有一个抽象方法需要实现
 
 -   ```java
-    	protected abstract ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response)
-    			throws Exception;
-    ```
+     protected abstract ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response)
+     			throws Exception;
+     ```
+
+
 
 -   handleRequestInternal():定义处理器时,就需要实现此方法
 
@@ -174,31 +178,34 @@
 -   在springmvc中注册:
 
 -   ```xml
-    	<!--继承自controller的处理器都要使用视图解析器-->
-    	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+     <!--继承自controller的处理器都要使用视图解析器-->
+     	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
             <property name="prefix" value="/web-resources/"/>
             <property name="suffix" value=".jsp"/>
         </bean>
-    	<!--注册MyAbstractController,设定supportedMethods是POST-->
+     	<!--注册MyAbstractController,设定supportedMethods是POST-->
         <bean class="com.sqm.handler.MyAbstractController" id="myAbstractController">
             <!--<property name="supportedMethods" value="POST"/>-->
             <property name="supportedMethods" value="GET"/>
         </bean>
-    ```
+     ```
+    ​```
 
 -   使用post方式:
 
 -   ```xml
-            <property name="supportedMethods" value="POST"/>
-    ```
+           <property name="supportedMethods" value="POST"/>
+     ```
+    ​```
 
 -   在index添加submit
 
 -   ```jsp
-      <form action="${pageContext.request.contextPath}/abstract-controller.do" method="post">
-          <input type="submit" value="abstract-controller"/>
-      </form>
-    ```
+     <form action="${pageContext.request.contextPath}/abstract-controller.do" method="post">
+         <input type="submit" value="abstract-controller"/>
+     </form>
+     ```
+    ​```
 
 ### ~~2.3.2 继承自MultiActionController~~(在spring 5 中没有此类)
 
@@ -331,11 +338,11 @@
             <bean class="org.springframework.web.servlet.view.XmlViewResolver">
                 <property name="location" value="classpath:my-views/my-views.xml"/>
             </bean>
-        ```
+      ```
 
 ### 2.5.4 ResourceBundleViewResolver 资源包视图解析器
 
--   View视图对象的注册除了在xml配置文件中注册外,也可以**使用properties文件注册**,是哦那个ResourceBundleViewResolver解析器
+-   View视图对象的注册除了在xml配置文件中注册外,也可以**使用properties文件注册**,使用那个ResourceBundleViewResolver解析器
 
 -   该属性文件需要定义在类路径下,且写法有要求:
 
@@ -363,7 +370,7 @@
             <bean class="org.springframework.web.servlet.view.ResourceBundleViewResolver">
                 <property name="basename" value="my-views"/>
             </bean>
-        ```
+      ```
 
 #### 视图解析器的优先级
 
@@ -384,7 +391,7 @@
             <bean class="org.springframework.web.servlet.view.InternalResourceView" id="view">
             <property name="url" value="/web-resources/welcome.jsp"/>
             </bean>
-        ```
+      ```
 
 3.  定义处理器类:同上
 
@@ -414,4 +421,4 @@
                 <property name="basename" value="my-views"/>
                 <property name="order" value="1"/>
             </bean>
-        ```
+      ```

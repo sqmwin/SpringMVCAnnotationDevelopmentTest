@@ -3,6 +3,9 @@
   <component name="AndroidDexCompilerConfiguration">
     <option name="MAX_HEAP_SIZE" value="1400" />
   </component>
+  <component name="FrameworkDetectionExcludesConfiguration">
+    <type id="web" />
+  </component>
   <component name="Kotlin2JsCompilerArguments">
     <option name="sourceMapPrefix" value="" />
     <option name="sourceMapEmbedSources" value="inlining" />
